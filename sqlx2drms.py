@@ -118,13 +118,13 @@ def sqlx2drms(sshuserhost,
         # Fetch output
         for line in ssh.stdout:
             if 'myprecious' in line:
+                data = [v for v in line.strip().split('\t')[:-1]]
                 try:
-                    data = [v for v in line.strip().split('\t')[:-1]]
+                    mseedid = data[-1]
+                    time = UTCDateTime('%s %s'%(data[0],data[1])).datetime
                 except:
                     print(line.strip(),'unexpected line')
                     continue
-                mseedid = data[-1]
-                time = UTCDateTime('%s %s'%(data[0],data[1])).datetime
                 psds.add(time,mseedid)
                 psds.count[(mseedid,time)] += [1]
                 psds.psd[(mseedid,time)] += [float(data[3])]
